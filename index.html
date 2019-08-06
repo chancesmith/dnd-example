@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <style>
+        body {
+            color: white;
+            background: #222;
+            font-size: 1.5em;
+        }
+
+        ol {
+            width: 30%;
+        }
+
+        li {
+            padding: 4px 5px;
+        }
+
+        .swatch {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            margin: 0px 13px 0px 0px;
+        }
+
+        .dragging {
+            background: #222;
+            opacity: .05;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Drag and Drop list</h2>
+    <ol id=list>
+        <!-- <li draggable="true" ondragover="dragOver(event)" ondragstart="dragStart(event)">tag item</li> -->
+    </ol>
+    <script>
+        var _elDragging;
+
+        function dragOver(e) {
+            if (isBefore(_elDragging, e.target)) e.target.parentNode.insertBefore(_elDragging, e.target);
+            else e.target.parentNode.insertBefore(_elDragging, e.target.nextSibling);
+            e.target.classList.remove('dragging')
+        }
+
+        function dragEnd(e) {
+            e.target.style.border = '1px transparent solid'
+        }
+
+        function dragStart(e) {
+            e.target.classList.add('dragging')
+            e.target.style.border = '1px #333 solid'
+            _elDragging = e.target;
+        }
+
+        function isBefore(el1, el2) {
+            if (el2.parentNode === el1.parentNode)
+                for (var cur = el1.previousSibling; cur && cur.nodeType !== 9; cur = cur.previousSibling)
+                    if (cur === el2) return true;
+            return false;
+        }
+        const tags = [{
+            name: "this.tag.is.grey",
+            color: 'grey'
+        }, {
+            name: "this.tag.is.red",
+            color: 'red'
+        }, {
+            name: "this.tag.is.salmon",
+            color: 'salmon'
+        }, {
+            name: "this.tag.is.teal",
+            color: 'teal'
+        }]
+        const ol = document.querySelector('#list')
+        tags.map(tag => {
+            const li = document.createElement('li');
+            const swatch = document.createElement('span');
+            swatch.classList.add('swatch')
+            swatch.style.background = tag.color
+            li.appendChild(swatch)
+            li.draggable = true
+            li.ondragover = dragOver
+            li.ondragend = dragEnd
+            li.ondragstart = dragStart
+            li.innerHTML += tag.name
+            ol.appendChild(li)
+        })
+    </script>
+</body>
+
+</html>
